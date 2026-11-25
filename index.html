@@ -122,40 +122,35 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzI3IuNr1FtkgEqwoaZIU8AEqtQVx5EmcDggjnYQ2xrKd1wITS--F4FX6k2sU2dQo3tTg/exec";
 
     async function handleLogin(e) {
-      e.preventDefault();
-      const user = document.getElementById('input-user').value;
-      const pass = document.getElementById('input-pass').value;
-      const btn = document.getElementById('btn-login');
-      const alertBox = document.getElementById('login-alert');
+  e.preventDefault();
+  const user = document.getElementById('input-user').value;
+  const pass = document.getElementById('input-pass').value;
+  const btn = document.getElementById('btn-login');
+  const alertBox = document.getElementById('login-alert');
 
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memverifikasi...';
-      btn.disabled = true;
-      alertBox.classList.add('d-none');
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memverifikasi...';
+  btn.disabled = true;
+  alertBox.classList.add('d-none');
 
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify({ action: "login", username: user, password: pass })
-        });
-        const data = await res.json();
+  try {
+    const loginUrl = `${GAS_URL}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+    const res = await fetch(loginUrl);
+    const data = await res.json();
 
-        if (data.success) {
-          window.location.href = GAS_URL;
-        } else {
-          alertBox.innerText = data.message || "Username atau Password salah!";
-          alertBox.classList.remove('d-none');
-        }
-      } catch (err) {
-        alertBox.innerText = "Gagal terhubung ke server. Coba lagi.";
-        alertBox.classList.remove('d-none');
-      } finally {
-        btn.innerHTML = 'Masuk ke Sistem';
-        btn.disabled = false;
-      }
+    if (data.success) {
+      window.location.href = GAS_URL;
+    } else {
+      alertBox.innerText = data.message || "Username atau Password salah!";
+      alertBox.classList.remove('d-none');
     }
+  } catch (err) {
+    alertBox.innerText = "Error: " + err.message;
+    alertBox.classList.remove('d-none');
+  } finally {
+    btn.innerHTML = 'Masuk ke Sistem';
+    btn.disabled = false;
+  }
+}
   </script>
 </body>
 </html>
