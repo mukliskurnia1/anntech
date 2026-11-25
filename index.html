@@ -135,12 +135,14 @@
       try {
         const res = await fetch(GAS_URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
           body: JSON.stringify({ action: "login", username: user, password: pass })
         });
         const data = await res.json();
 
         if (data.success) {
-          // Masuk ke sistem ERP setelah kredensial terverifikasi
           window.location.href = GAS_URL;
         } else {
           alertBox.innerText = data.message || "Username atau Password salah!";
